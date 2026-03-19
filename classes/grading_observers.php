@@ -1,0 +1,71 @@
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+
+/**
+ * Grading observers.
+ *
+ * @package   local_tpc
+ * @category  event
+ * @copyright The Pilot Club Inc.
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+namespace local_tpc;
+
+defined('MOODLE_INTERNAL') || die();
+
+class grading_observers {
+    /**
+     * A quiz attempt has been submitted.
+     *
+     * @param \mod_quiz\event\attempt_submitted $event The event.
+     * @return bool
+     */
+    public static function attempt_submitted($event) {
+        $attempt = $event->get_record_snapshot('quiz_attempts', $event->objectid);
+        $quiz = $event->get_record_snapshot('quiz', $attempt->quiz);
+        $student = \core_user::get_user($event->relateduserid);
+
+        $configquizid = get_config('local_tpc', 'quizid_fec');
+        if ($quiz->id != $configquizid) {
+            return true;
+        }
+
+//        $maxgrade = (float) $quiz->sumgrades;
+//        $grade = $attempt->sumgrades / $maxgrade * 100;
+
+        $url = get_config('local_tpc', 'apiurl');
+//        $key = get_config('local_tpc', 'apikey');
+
+        $curl = new \curl();
+
+        $curl->setHeader('Accept: application/json');
+//        $curl->setHeader("X-API-Key: $key");
+
+        $curl->post($url, [
+//            'content' => $student->idnumber. " ".$student->username . 'Has completed the FEC with a ' . $grade,
+            'content' => 'I Did it!' . $quiz->name,
+//            'cid' => $student->idnumber ?: $student->username,
+//            'grade' => number_format($grade, 2),
+        ]);
+
+        if ($curl->info['http_code'] != 200) {
+            return false;
+        }
+
+        return true;
+    }
+}
