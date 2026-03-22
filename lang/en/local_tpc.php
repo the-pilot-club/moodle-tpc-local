@@ -24,11 +24,29 @@
 
 $string['pluginname'] = 'TPC Moodle Integrations';
 
-$string['apiurl'] = 'webhook URL';
-$string['apiurl_desc'] = 'This sets the URL to send grading events to.';
+// Settings Pages Names
+$string['generalsettings'] = 'General Settings';
+$string['fecsettings'] = 'Flying Essentials Course Settings';
 
-$string['apikey'] = 'Webhook secret';
-$string['apikey_desc'] = 'This sets the secret key to use when sending data to the webhook.';
+// General Settings
+
+$string['webhookid'] = 'Discord Webhook ID';
+$string['webhookid_desc'] = 'This sets the Discord Webhook ID where updates will be sent.';
+
+$string['webhooktoken'] = 'Discord Webhook Token';
+$string['webhooktoken_desc'] = 'This sets the Discord Webhook Token where updates will be sent.';
+
+$string['pramsapiurl'] = 'PRAMS API URL';
+$string['pramsapiurl_desc'] = 'This sets the URL of the PRAMS API.';
+
+$string['pramsapikey'] = 'PRAMS API Key';
+$string['pramsapikey_desc'] = 'This sets the API key to use when accessing the PRAMS API.';
+
+
+// FEC Settings
 
 $string['quizid_fec'] = 'Quiz ID for Flying Essentials Course';
 $string['quizid_fec_desc'] = 'This specifies the quiz ID for the Flying Essentials course.';
+
+$string['badgeid_fec'] = 'Badge ID for Flying Essentials Course';
+$string['badgeid_fec_desc'] = 'This specifies the Badge ID for the Flying Essentials course.';

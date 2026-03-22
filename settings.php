@@ -25,32 +25,64 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    $settings = new admin_settingpage('tpc', 'TPC');
-
+    $settings = new theme_boost_admin_settingspage_tabs('tpc', new lang_string('pluginname', 'local_tpc'));
     if ($ADMIN->fulltree) {
-        $settings->add(new admin_setting_configtext(
-            'local_tpc/apiurl',
-            new lang_string('apiurl', 'local_tpc'),
-            new lang_string('apiurl_desc', 'local_tpc'),
+    $general = new admin_settingpage('tpc_general', new lang_string('generalsettings', 'local_tpc'));
+    $fec = new admin_settingpage('tpc_fec', new lang_string('fecsettings', 'local_tpc'));
+
+        $general->add(new admin_setting_configtext(
+            'local_tpc/webhookid',
+            new lang_string('webhookid', 'local_tpc'),
+            new lang_string('webhookid_desc', 'local_tpc'),
             '',
             PARAM_TEXT
         ));
 
-        $settings->add(new admin_setting_configpasswordunmask(
-            'local_tpc/apikey',
-            new lang_string('apikey', 'local_tpc'),
-            new lang_string('apikey_desc', 'local_tpc'),
-            ''
+        $general->add(new admin_setting_configtext(
+            'local_tpc/webhooktoken',
+            new lang_string('webhooktoken', 'local_tpc'),
+            new lang_string('webhooktoken_desc', 'local_tpc'),
+            '',
+            PARAM_TEXT
         ));
 
-        $settings->add(new admin_setting_configtext(
+        $general->add(new admin_setting_configtext(
+            'local_tpc/pramsapiurl',
+            new lang_string('pramsapiurl', 'local_tpc'),
+            new lang_string('pramsapiurl_desc', 'local_tpc'),
+            '',
+            PARAM_TEXT
+        ));
+
+        $general->add(new admin_setting_configtext(
+            'local_tpc/pramsapikey',
+            new lang_string('pramsapikey', 'local_tpc'),
+            new lang_string('pramsapikey_desc', 'local_tpc'),
+            '',
+            PARAM_TEXT
+        ));
+
+
+        $fec->add(new admin_setting_configtext(
             'local_tpc/quizid_fec',
             new lang_string('quizid_fec', 'local_tpc'),
             new lang_string('quizid_fec_desc', 'local_tpc'),
             '',
             PARAM_INT
         ));
-    }
+        $fec->add(new admin_setting_configtext(
+            'local_tpc/badgeid_fec',
+            new lang_string('badgeid_fec', 'local_tpc'),
+            new lang_string('badgeid_fec_desc', 'local_tpc'),
+            '',
+            PARAM_INT
+        ));
+
+
+        $settings->add($general);
+        $settings->add($fec);
+
 
     $ADMIN->add('localplugins', $settings);
+}
 }

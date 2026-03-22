@@ -22,7 +22,7 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2026031813;
+$plugin->version = 2026032115;
 $plugin->requires = 2022041900.00; // Moodle 4.0.
 $plugin->component = 'local_tpc';
 $plugin->maturity = MATURITY_STABLE;

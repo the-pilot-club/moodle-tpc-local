@@ -25,6 +25,8 @@
 
 namespace local_tpc;
 
+use GuzzleHttp\Client;
+
 defined('MOODLE_INTERNAL') || die();
 
 class grading_observers {
@@ -34,37 +36,94 @@ class grading_observers {
      * @param \mod_quiz\event\attempt_submitted $event The event.
      * @return bool
      */
-    public static function attempt_submitted($event) {
+    public static function processFECAttempt($event) {
         $attempt = $event->get_record_snapshot('quiz_attempts', $event->objectid);
         $quiz = $event->get_record_snapshot('quiz', $attempt->quiz);
         $student = \core_user::get_user($event->relateduserid);
+        $webhookid = get_config('local_tpc', 'webhookid');
+        $webhooktoken = get_config('local_tpc', 'webhooktoken');
+        $pramsurl = get_config('local_tpc', 'paramsurl');
+        $pramskey = get_config('local_tpc', 'paramskey');
+        $badge_id = get_config('local_tpc', 'badgeid_fec');
 
-        $configquizid = get_config('local_tpc', 'quizid_fec');
-        if ($quiz->id != $configquizid) {
-            return true;
+        $maxgrade = (float) $quiz->sumgrades;
+        $grade = $attempt->sumgrades / $maxgrade * 100;
+
+        if ($grade < 90) {
+            if (!empty($webhookid) && !empty($webhooktoken)) {
+                $discord = new Client([
+                    'base_uri' => 'https://discord.com',
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'User-Agent' => 'TPCFlightSchool',
+                        'Accept' => 'application/json',
+                    ],
+                ]);
+
+                $response = $discord->post("/api/webhooks/$webhookid/$webhooktoken", [
+                    'json' => [
+                        'embeds' => [
+                            [
+                                'title' => 'Flying Essentials Course Completion Notification!',
+                                'thumbnail' => [
+                                    'url' => 'https://static1.squarespace.com/static/614689d3918044012d2ac1b4/t/616ff36761fabc72642806e3/1634726781251/TPC_FullColor_TransparentBg_1280x1024_72dpi.png',
+                                ],
+                                'fields' => [
+                                    [
+                                        'name' => 'CID', 'value' => 'TPC' . $student->username,
+                                    ],
+                                ],
+                                'color' => 3651327,
+                                'footer' => [
+                                    'text' => 'Made by TPC Dev Team | TPC Flight School',
+                                ],
+                            ],
+                        ],
+                    ]
+                ]);
+
+                if ($response->getStatusCode() != 200) {
+                    return false;
+                }
+            }
+
+            if (!empty($pramsurl) && empty($pramskey)) {
+                $prams = new Client([
+                    'base_uri' => 'https://prams.vatsim.net',
+                    'headers' => [
+                        'Content-Type' => 'application/json',
+                        'User-Agent' => 'TPCFlightSchool',
+                        'Accept' => 'application/json',
+                        'Authorization' => 'Bearer ' . $pramskey,
+                    ],
+                ]);
+
+                $response = $prams->post($pramsurl, [
+                    'json' => [
+                        'user_id' => $student->username,
+                        'badge_id' => $badge_id,
+                    ]
+                ]);
+
+                if ($response->getStatusCode() != 200) {
+                    return false;
+                }
+            }
+
         }
+        return true;
+    }
 
-//        $maxgrade = (float) $quiz->sumgrades;
-//        $grade = $attempt->sumgrades / $maxgrade * 100;
+    public static function attempt_submitted($event) {
+        $attempt = $event->get_record_snapshot('quiz_attempts', $event->objectid);
+        $quiz = $event->get_record_snapshot('quiz', $attempt->quiz);
 
-        $url = get_config('local_tpc', 'apiurl');
-//        $key = get_config('local_tpc', 'apikey');
+        $configquizidFEC = get_config('local_tpc', 'quizid_fec');
 
-        $curl = new \curl();
-
-        $curl->setHeader('Accept: application/json');
-//        $curl->setHeader("X-API-Key: $key");
-
-        $curl->post($url, [
-//            'content' => $student->idnumber. " ".$student->username . 'Has completed the FEC with a ' . $grade,
-            'content' => 'I Did it!' . $quiz->name,
-//            'cid' => $student->idnumber ?: $student->username,
-//            'grade' => number_format($grade, 2),
-        ]);
-
-        if ($curl->info['http_code'] != 200) {
-            return false;
-        }
+        match ($quiz->id) {
+            $configquizidFEC => self::processFECAttempt($event),
+            default => true,
+        };
 
         return true;
     }
