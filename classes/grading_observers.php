@@ -70,7 +70,7 @@ class grading_observers {
                                 ],
                                 'fields' => [
                                     [
-                                        'name' => 'CID', 'value' => 'TPC' . $student->username,
+                                        'name' => 'CID', 'value' =>  $student->username,
                                     ],
                                 ],
                                 'color' => 3651327,
