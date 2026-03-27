@@ -30,20 +30,18 @@ if ($hassiteconfig) {
     $general = new admin_settingpage('tpc_general', new lang_string('generalsettings', 'local_tpc'));
     $fec = new admin_settingpage('tpc_fec', new lang_string('fecsettings', 'local_tpc'));
 
-        $general->add(new admin_setting_configtext(
+        $general->add(new admin_setting_configpasswordunmask(
             'local_tpc/webhookid',
             new lang_string('webhookid', 'local_tpc'),
             new lang_string('webhookid_desc', 'local_tpc'),
             '',
-            PARAM_TEXT
         ));
 
-        $general->add(new admin_setting_configtext(
+        $general->add(new admin_setting_configpasswordunmask(
             'local_tpc/webhooktoken',
             new lang_string('webhooktoken', 'local_tpc'),
             new lang_string('webhooktoken_desc', 'local_tpc'),
             '',
-            PARAM_TEXT
         ));
 
         $general->add(new admin_setting_configtext(
@@ -54,12 +52,11 @@ if ($hassiteconfig) {
             PARAM_TEXT
         ));
 
-        $general->add(new admin_setting_configtext(
+        $general->add(new admin_setting_configpasswordunmask(
             'local_tpc/pramsapikey',
             new lang_string('pramsapikey', 'local_tpc'),
             new lang_string('pramsapikey_desc', 'local_tpc'),
             '',
-            PARAM_TEXT
         ));
 
 
