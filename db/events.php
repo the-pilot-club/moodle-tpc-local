@@ -27,7 +27,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $observers = [
     [
-        'eventname' => '\mod_quiz\event\attempt_submitted',
+        'eventname' => '\mod_quiz\event\attempt_graded',
         'callback' => '\local_tpc\grading_observers::attempt_submitted',
     ],
 ];
