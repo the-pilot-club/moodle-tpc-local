@@ -100,7 +100,7 @@ class grading_observers {
 
                 $response = $prams->post($pramsurl, [
                     'json' => [
-                        'user_id' => $student->username,
+                        'user_cid' => $student->username,
                         'badge_id' => $badge_id,
                     ]
                 ]);
