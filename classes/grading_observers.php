@@ -87,7 +87,7 @@ class grading_observers {
                 }
             }
 
-            if (!empty($pramsurl) && empty($pramskey)) {
+            if (!empty($pramsurl) && !empty($pramskey)) {
                 $prams = new Client([
                     'base_uri' => 'https://prams.vatsim.net',
                     'headers' => [
