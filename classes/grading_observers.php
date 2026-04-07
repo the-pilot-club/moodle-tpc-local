@@ -50,8 +50,6 @@ class grading_observers {
         $grade = $attempt->sumgrades / $maxgrade * 100;
 
         if ($grade >= 80) {
-            var_dump($pramsurl);
-            die();
             if (!empty($webhookid) && !empty($webhooktoken)) {
                 $discord = new Client([
                     'base_uri' => 'https://discord.com',
