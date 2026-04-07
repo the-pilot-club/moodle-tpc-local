@@ -49,7 +49,7 @@ class grading_observers {
         $maxgrade = (float) $quiz->sumgrades;
         $grade = $attempt->sumgrades / $maxgrade * 100;
 
-        if ($grade >= 90) {
+        if ($grade >= 80) {
             if (!empty($webhookid) && !empty($webhooktoken)) {
                 $discord = new Client([
                     'base_uri' => 'https://discord.com',
