@@ -42,14 +42,16 @@ class grading_observers {
         $student = \core_user::get_user($event->relateduserid);
         $webhookid = get_config('local_tpc', 'webhookid');
         $webhooktoken = get_config('local_tpc', 'webhooktoken');
-        $pramsurl = get_config('local_tpc', 'paramsurl');
-        $pramskey = get_config('local_tpc', 'paramskey');
+        $pramsurl = get_config('local_tpc', 'pramsapiurl');
+        $pramskey = get_config('local_tpc', 'pramsapikey');
         $badge_id = get_config('local_tpc', 'badgeid_fec');
 
         $maxgrade = (float) $quiz->sumgrades;
         $grade = $attempt->sumgrades / $maxgrade * 100;
 
         if ($grade >= 80) {
+            var_dump($pramsurl);
+            die();
             if (!empty($webhookid) && !empty($webhooktoken)) {
                 $discord = new Client([
                     'base_uri' => 'https://discord.com',
