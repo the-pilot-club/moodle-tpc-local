@@ -81,8 +81,7 @@ class grading_observers {
                         ],
                     ]
                 ]);
-
-                if ($response->getStatusCode() != 200) {
+                if ($response->getStatusCode() != 204) {
                     return false;
                 }
             }
@@ -105,7 +104,7 @@ class grading_observers {
                     ]
                 ]);
 
-                if ($response->getStatusCode() != 200) {
+                if ($response->getStatusCode() != 201) {
                     return false;
                 }
             }
